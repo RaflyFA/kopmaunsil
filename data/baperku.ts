@@ -179,9 +179,3 @@ export const modules: Module[] = [
 
 export const getModule = (slug: string) => modules.find((module) => module.slug === slug)
 export const latestModules = modules.slice(0, 3)
-
-export const events = [
-  { title: 'DIKSARKOP Angkatan 2026', date: '15 Februari 2026', category: 'Pendidikan', photos: 12 },
-  { title: 'Rapat Anggota Tahunan 2025', date: '20 Januari 2026', category: 'RAT', photos: 24 },
-  { title: 'Dies Natalis KOPMA UNSIL', date: '23 April 2025', category: 'Dies Natalis', photos: 18 },
-]

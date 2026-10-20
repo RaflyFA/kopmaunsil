@@ -16,7 +16,7 @@ import {
 import { documentationEvents, EventDoc } from '@/data/dokumentasi'
 import { getStoredData, setStoredData, STORAGE_KEYS } from '@/lib/storage'
 
-const categories = ['Semua', 'Pendidikan', 'RAT', 'Dies Natalis', 'Sosial & Wirausaha']
+const categories = ['Semua', ...Array.from(new Set(documentationEvents.map((e) => e.category)))]
 
 export function DokumentasiGallery() {
   const [activeCategory, setActiveCategory] = useState('Semua')

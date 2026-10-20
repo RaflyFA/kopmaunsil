@@ -10,7 +10,7 @@ import {
   Sparkles,
   TrendingUp,
 } from 'lucide-react'
-import { events, latestModules } from '@/data/baperku'
+import { latestModules } from '@/data/baperku'
 import { documentationEvents } from '@/data/dokumentasi'
 import { PortalShell, SectionTitle } from '@/components/portal-shell'
 import { KtaCard } from '@/components/kta-card'
@@ -233,9 +233,9 @@ export default function HomePage() {
       <section className="mt-10 pb-6">
         <SectionTitle title="Agenda & Momen Anggota" href="/dokumentasi" label="Lihat Arsip Lengkap" />
         <div className="grid gap-3 sm:grid-cols-3">
-          {events.map((event) => (
+          {documentationEvents.slice(0, 3).map((event) => (
             <div
-              key={event.title}
+              key={event.id}
               className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
             >
               <div>
@@ -244,7 +244,7 @@ export default function HomePage() {
                 </span>
                 <h3 className="mt-2 text-xs font-bold leading-5 text-slate-900">{event.title}</h3>
               </div>
-              <p className="mt-3 text-[11px] text-slate-400">{event.date} · {event.photos} Foto</p>
+              <p className="mt-3 text-[11px] text-slate-400">{event.date} · {event.photosCount} Foto</p>
             </div>
           ))}
         </div>

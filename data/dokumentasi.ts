@@ -1,7 +1,7 @@
 export type EventDoc = {
   id: string
   title: string
-  category: 'Pendidikan' | 'RAT' | 'Dies Natalis' | 'Sosial & Wirausaha'
+  category: 'Pendidikan' | 'LPJS & Musyawarah' | 'Temu Anggota'
   date: string
   location: string
   summary: string
@@ -16,102 +16,270 @@ export type EventDoc = {
 
 export const documentationEvents: EventDoc[] = [
   {
-    id: 'doc-diksarkop-2026',
-    title: 'DIKSARKOP Angkatan 2026: Generasi Baru Koperasi',
+    id: 'doc-diksarkop-1',
+    title: 'DIKSARKOP I (Pendidikan Dasar Koperasi)',
     category: 'Pendidikan',
     date: '15 Februari 2026',
     location: 'Gedung Rektorat Lt. 2 Universitas Siliwangi',
-    summary: 'Pendidikan Dasar Koperasi menyambut 120+ kader baru dengan pemaparan jati diri koperasi, simulasi bisnis kelompok, dan team building.',
-    photosCount: 6,
-    coverImage: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
-    likes: 87,
+    summary:
+      'Pendidikan Dasar Koperasi (DIKSARKOP) I untuk menyambut dan membina kader baru KOPMA UNSIL dengan pengenalan jati diri, nilai-nilai perkoperasian, dan simulasi kepengurusan.',
+    photosCount: 7,
+    coverImage: '/DIKSARKOP%201/IMG_4722.webp',
+    likes: 84,
     gallery: [
       {
-        url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Penyampaian materi nilai dan prinsip koperasi oleh alumni pengurus KOPMA.',
+        url: '/DIKSARKOP%201/IMG_4722.webp',
+        caption: 'Penyampaian materi perkoperasian dan nilai dasar gerakan mahasiswa.',
       },
       {
-        url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Diskusi kelompok studi kasus simulasi penyusunan model bisnis koperasi.',
+        url: '/DIKSARKOP%201/IMG_0459.webp',
+        caption: 'Suasana pembukaan DIKSARKOP I bersama jajaran pengurus PSDA.',
       },
       {
-        url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Sesi ice breaking dan pembagian atribut kelengkapan kader anggota baru.',
+        url: '/DIKSARKOP%201/IMG_4750.webp',
+        caption: 'Peserta menyimak pemaparan materi dari pemateri tamu.',
       },
       {
-        url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Foto bersama seluruh panitia PSDA dan peserta DIKSARKOP 2026.',
+        url: '/DIKSARKOP%201/IMG_4766.webp',
+        caption: 'Sesi interaktif tanya jawab dan diskusi bersama peserta kader baru.',
+      },
+      {
+        url: '/DIKSARKOP%201/IMG_4796.webp',
+        caption: 'Simulasi kepemimpinan dan studi kasus pengelolaan koperasi mahasiswa.',
+      },
+      {
+        url: '/DIKSARKOP%201/IMG_4809%20(1).webp',
+        caption: 'Momen kebersamaan panitia dan peserta di sela-sela kegiatan pelatihan.',
+      },
+      {
+        url: '/DIKSARKOP%201/IMG_4811.webp',
+        caption: 'Foto bersama penutupan DIKSARKOP I KOPMA UNSIL.',
       },
     ],
   },
   {
-    id: 'doc-rat-2025',
-    title: 'Rapat Anggota Tahunan (RAT) Tahun Buku 2025',
-    category: 'RAT',
-    date: '20 Januari 2026',
-    location: 'Auditorium Utama UNSIL',
-    summary: 'Musyawarah tertinggi anggota untuk evaluasi laporan pertanggungjawaban pengurus, pengawas, dan pengesahan pembagian SHU.',
-    photosCount: 8,
-    coverImage: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
-    likes: 104,
-    gallery: [
-      {
-        url: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Sidang pleno pembahasan tata tertib dan laporan pertanggungjawaban.',
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Pemberian apresiasi anggota teraktif dan transaksi terbanyak tahun 2025.',
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Penyampaian pandangan umum dan tanya jawab dari perwakilan anggota.',
-      },
-    ],
-  },
-  {
-    id: 'doc-dies-natalis-42',
-    title: 'Dies Natalis KOPMA UNSIL ke-42: Bersatu Menuju Mandiri',
-    category: 'Dies Natalis',
-    date: '23 April 2025',
-    location: 'Halaman Gedung Student Center UNSIL',
-    summary: 'Peringatan hari lahir koperasi mahasiswa dengan expo wirausaha anggota, potong tumpeng kebersamaan, dan donor darah sosial.',
+    id: 'doc-lpjs-2026',
+    title: 'Laporan Pertanggungjawaban Semester (LPJS) 2026',
+    category: 'LPJS & Musyawarah',
+    date: '30 Juli 2026',
+    location: 'Ruang Sidang Utama KOPMA UNSIL',
+    summary:
+      'Forum evaluasi kinerja paruh waktu kepengurusan KOPMA UNSIL periode 2026, memaparkan capaian program kerja bidang, evaluasi unit usaha, serta keuangan semester berjalan.',
     photosCount: 12,
-    coverImage: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80',
-    likes: 126,
+    coverImage: '/LPJS%202026/MVIMG_20260730_094158.webp',
+    likes: 96,
     gallery: [
       {
-        url: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Malam keakraban Dies Natalis bersama alumni dan pembina KOPMA.',
+        url: '/LPJS%202026/MVIMG_20260730_094158.webp',
+        caption: 'Pemaparan laporan pertanggungjawaban oleh pengurus harian.',
       },
       {
-        url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Stand bazaar produk kuliner dan merchandise karya anggota binaan PSDA.',
+        url: '/LPJS%202026/MVIMG_20260730_093855.webp',
+        caption: 'Pembukaan sidang pleno LPJS 2026 oleh pimpinan sidang.',
       },
       {
-        url: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Pemotongan tumpeng peringatan hari ulang tahun ke-42 KOPMA UNSIL.',
+        url: '/LPJS%202026/MVIMG_20260730_093936.webp',
+        caption: 'Pembacaan tata tertib dan agenda musyawarah semester.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_094525.webp',
+        caption: 'Sesi evaluasi program kerja dan tanggapan dari dewan pengawas.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_095234.webp',
+        caption: 'Penyampaian pandangan umum dari perwakilan anggota aktif.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_095437.webp',
+        caption: 'Diskusi panel perkembangan unit usaha dan layanan anggota.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_104119.webp',
+        caption: 'Tanya jawab transparan seputar keuangan dan realisasi anggaran.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_140454.webp',
+        caption: 'Sidang komisi perumusan rekomendasi perbaikan semester berikutnya.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_140811.webp',
+        caption: 'Presentasi hasil rekomendasi komisi organisasi dan kaderisasi.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_170839.webp',
+        caption: 'Pengesahan dan penandatanganan berita acara LPJS 2026.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_174803.webp',
+        caption: 'Pemberian apresiasi kepada pengurus dan staf berprestasi.',
+      },
+      {
+        url: '/LPJS%202026/MVIMG_20260730_175245.webp',
+        caption: 'Foto bersama seluruh jajaran pengurus dan pengawas LPJS 2026.',
       },
     ],
   },
   {
-    id: 'doc-bazaar-wirausaha',
-    title: 'KOPMA Youth Entrepreneur Fair & Pitching Day',
-    category: 'Sosial & Wirausaha',
-    date: '12 November 2025',
-    location: 'Plaza Kampus 1 Siliwangi',
-    summary: 'Ajang unjuk gigi ide bisnis anggota Kopma Incubation Class dengan pendampingan langsung praktisi UMKM Tasikmalaya.',
-    photosCount: 5,
-    coverImage: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=80',
-    likes: 62,
+    id: 'doc-temu-anggota-1',
+    title: 'Temu Anggota I: Sinergi & Silaturahmi',
+    category: 'Temu Anggota',
+    date: '18 April 2026',
+    location: 'Student Center & Area Terbuka Kampus 1 Siliwangi',
+    summary:
+      'Ajang temu dan silaturahmi seluruh anggota KOPMA UNSIL untuk mempererat persaudaraan, berbagi aspirasi, games interaktif, dan sosialisasi program kerja PSDA.',
+    photosCount: 18,
+    coverImage: '/Temu%20Anggota%201/IMG_9463.webp',
+    likes: 112,
     gallery: [
       {
-        url: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Sesi pitching rencana bisnis di hadapan dewan kurator dan perbankan syariah.',
+        url: '/Temu%20Anggota%201/IMG_9463.webp',
+        caption: 'Momen kebersamaan dan antusiasme peserta Temu Anggota I.',
       },
       {
-        url: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Konsultasi kemasan dan legalitas produk bersama dinas koperasi daerah.',
+        url: '/Temu%20Anggota%201/IMG_9484.webp',
+        caption: 'Sesi ice breaking dan games keakraban antar angkatan.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9495.webp',
+        caption: 'Diskusi santai seputar pengalaman berkoperasi di kampus.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9507.webp',
+        caption: 'Sosialisasi agenda dan program pengembangan anggota bidang PSDA.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9511.webp',
+        caption: 'Penyampaian masukan dan sharing session bersama pengurus.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9516.webp',
+        caption: 'Keceriaan anggota dalam sesi dinamika kelompok.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9519.webp',
+        caption: 'Pembagian doorprize dan cinderamata bagi anggota aktif.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9522.webp',
+        caption: 'Antusiasme anggota baru dalam mengenal kultur organisasi.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9527.webp',
+        caption: 'Sesi foto bersama kelompok kecil dan panitia acara.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9536.webp',
+        caption: 'Suasana santai dan akrab di pelataran student center.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9560.webp',
+        caption: 'Interaksi hangat pengurus dengan para anggota binaan.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9605.webp',
+        caption: 'Rangkaian games kekompakan dan kepemimpinan tim.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9641.webp',
+        caption: 'Momen refleksi dan apresiasi kebersamaan anggota.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9659.webp',
+        caption: 'Pembagian konsumsi dan ramah tamah antar kader.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9676.webp',
+        caption: 'Yel-yel semangat KOPMA UNSIL bersama seluruh peserta.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9689.webp',
+        caption: 'Penyerahan penghargaan bagi kelompok paling kompak.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9768.webp',
+        caption: 'Foto bersama panitia pelaksana Temu Anggota I.',
+      },
+      {
+        url: '/Temu%20Anggota%201/IMG_9784.webp',
+        caption: 'Foto keluarga besar seluruh anggota hadir Temu Anggota I.',
+      },
+    ],
+  },
+  {
+    id: 'doc-temu-anggota-2',
+    title: 'Temu Anggota II: Evaluasi & Kebersamaan',
+    category: 'Temu Anggota',
+    date: '12 September 2026',
+    location: 'Student Center & Ruang Pertemuan UNSIL',
+    summary:
+      'Lanjutan pertemuan anggota kedua untuk evaluasi keterlibatan anggota dalam kepanitiaan, pengumuman reward point PSDA semester, serta penguatan solidaritas organisasi.',
+    photosCount: 16,
+    coverImage: '/Temu%20Anggota%202/IMG_8794.webp',
+    likes: 128,
+    gallery: [
+      {
+        url: '/Temu%20Anggota%202/IMG_8794.webp',
+        caption: 'Pembukaan Temu Anggota II oleh pengurus PSDA KOPMA.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_8798.webp',
+        caption: 'Pemaparan rekapitulasi keaktifan dan perolehan poin anggota.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_8817.webp',
+        caption: 'Sesi diskusi evaluasi keterlibatan anggota di kegiatan kampus.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_8879.webp',
+        caption: 'Tanya jawab seputar persiapan RAT dan pendidikan lanjutan.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_8889.webp',
+        caption: 'Sharing session bersama alumni dan demisioner pengurus.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_8904.webp',
+        caption: 'Games interaktif pengasah pengetahuan perkoperasian.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_8922.webp',
+        caption: 'Pemberian sertifikat apresiasi bagi panitia dan peserta aktif.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_8958.webp',
+        caption: 'Momen keakraban santai antar pengurus dan anggota baru.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9008.webp',
+        caption: 'Suasana ruang pertemuan saat penyampaian refleksi organisasi.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9025.webp',
+        caption: 'Keceriaan saat pengumuman pemenang kuis keakraban.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9038.webp',
+        caption: 'Penyerahan hadiah apresiasi kader berdedikasi.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9047.webp',
+        caption: 'Momen hangat berbincang santai di penghujung acara.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9062.webp',
+        caption: 'Sesi candid panitia yang telah bekerja keras mempersiapkan acara.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9073.webp',
+        caption: 'Ramah tamah dan makan bersama seluruh peserta.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9097.webp',
+        caption: 'Foto bersama panitia bidang PSDA Temu Anggota II.',
+      },
+      {
+        url: '/Temu%20Anggota%202/IMG_9111.webp',
+        caption: 'Foto bersama seluruh anggota KOPMA UNSIL pada Temu Anggota II.',
       },
     ],
   },
