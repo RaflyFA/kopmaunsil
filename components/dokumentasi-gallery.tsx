@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Calendar,
   CheckCircle2,
@@ -26,11 +26,33 @@ export function DokumentasiGallery() {
   const [likedIds, setLikedIds] = useState<string[]>([])
   const [selectedEvent, setSelectedEvent] = useState<EventDoc | null>(null)
   const [currentPhotoIdx, setCurrentPhotoIdx] = useState(0)
+  const thumbnailScrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const list = getStoredData<string[]>(STORAGE_KEYS.LIKED_EVENTS, [])
     setLikedIds(list)
   }, [])
+
+  // Auto-scroll thumbnail terpilih ke tengah saat foto berganti
+  useEffect(() => {
+    if (thumbnailScrollRef.current) {
+      const activeThumb = thumbnailScrollRef.current.children[currentPhotoIdx] as HTMLElement
+      if (activeThumb) {
+        activeThumb.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        })
+      }
+    }
+  }, [currentPhotoIdx])
+
+  const scrollThumbnails = (direction: 'left' | 'right') => {
+    if (thumbnailScrollRef.current) {
+      const offset = direction === 'left' ? -220 : 220
+      thumbnailScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+    }
+  }
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -275,24 +297,50 @@ export function DokumentasiGallery() {
                   </span>
                 </div>
 
-                {/* Thumbnails strip (kotak-kotak total gambar) */}
+                {/* Thumbnails strip (kotak-kotak total gambar dengan custom scrollbar halus) */}
                 {selectedEvent.gallery.length > 1 && (
-                  <div className="mt-3 flex gap-2.5 overflow-x-auto pb-1.5">
-                    {selectedEvent.gallery.map((photo, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setCurrentPhotoIdx(idx)}
-                        className={`relative aspect-[16/10] w-18 shrink-0 overflow-hidden rounded-xl border-2 transition-all ${
-                          currentPhotoIdx === idx
-                            ? 'border-[#0133C6] ring-2 ring-[#0133C6]/25 shadow-sm opacity-100 scale-105'
-                            : 'border-slate-200 opacity-60 hover:opacity-100'
-                        }`}
-                        title={`Buka foto ${idx + 1}`}
-                      >
-                        <img src={photo.url} alt="" className="h-full w-full object-cover" />
-                      </button>
-                    ))}
+                  <div className="relative mt-3 group/thumbs">
+                    {/* Tombol Geser Kiri */}
+                    <button
+                      type="button"
+                      onClick={() => scrollThumbnails('left')}
+                      className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 hidden size-7 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-md backdrop-blur transition hover:bg-white hover:text-[#0133C6] hover:scale-110 sm:flex"
+                      aria-label="Geser thumbnail ke kiri"
+                    >
+                      <ChevronLeft className="size-4" />
+                    </button>
+
+                    {/* Wadah Scroll Thumbnail dengan custom scrollbar */}
+                    <div
+                      ref={thumbnailScrollRef}
+                      className="custom-scrollbar-x flex gap-2.5 overflow-x-auto pb-2.5 pt-1 scroll-smooth"
+                    >
+                      {selectedEvent.gallery.map((photo, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setCurrentPhotoIdx(idx)}
+                          className={`relative aspect-[16/10] w-18 shrink-0 overflow-hidden rounded-xl border-2 transition-all ${
+                            currentPhotoIdx === idx
+                              ? 'border-[#0133C6] ring-2 ring-[#0133C6]/25 shadow-sm opacity-100 scale-105'
+                              : 'border-slate-200 opacity-60 hover:opacity-100'
+                          }`}
+                          title={`Buka foto ${idx + 1}`}
+                        >
+                          <img src={photo.url} alt="" className="h-full w-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Tombol Geser Kanan */}
+                    <button
+                      type="button"
+                      onClick={() => scrollThumbnails('right')}
+                      className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 hidden size-7 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-md backdrop-blur transition hover:bg-white hover:text-[#0133C6] hover:scale-110 sm:flex"
+                      aria-label="Geser thumbnail ke kanan"
+                    >
+                      <ChevronRight className="size-4" />
+                    </button>
                   </div>
                 )}
               </div>
@@ -300,12 +348,7 @@ export function DokumentasiGallery() {
               {/* KETERANGAN LANJUTAN KEGIATAN (DI BAWAH KOTAK-KOTAK GAMBAR) */}
               <div className="border-t border-slate-200/80 bg-slate-50/70 px-6 py-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex size-7 items-center justify-center rounded-lg bg-[#0133C6]/10 text-[#0133C6]">
-                      <Info className="size-4" />
-                    </div>
-                    <h4 className="text-sm font-bold text-slate-900">Keterangan & Informasi Kegiatan</h4>
-                  </div>
+                  
 
                   {/* Tombol Sukai di dalam modal */}
                   <button
@@ -338,17 +381,11 @@ export function DokumentasiGallery() {
                     <Calendar className="size-3.5 text-[#0133C6]" />
                     {selectedEvent.date}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-700 shadow-xs">
-                    <ImageIcon className="size-3.5 text-[#0133C6]" />
-                    {selectedEvent.photosCount} Foto Dokumentasi
-                  </span>
+                  
                 </div>
 
                 {/* Deskripsi Lengkap Card */}
                 <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Penjelasan Lengkap Kegiatan
-                  </p>
                   <p className="mt-2 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
                     {selectedEvent.description || selectedEvent.summary}
                   </p>
