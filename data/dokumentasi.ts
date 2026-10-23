@@ -26,10 +26,9 @@ export const documentationEvents: EventDoc[] = [
     summary:
       'Pendidikan Dasar Koperasi (DIKSARKOP) I untuk menyambut dan membina kader baru KOPMA UNSIL dengan pengenalan jati diri, nilai-nilai perkoperasian, dan simulasi kepengurusan.',
     description:
-      'Pendidikan Dasar Koperasi (DIKSARKOP) I merupakan tahapan kaderisasi awal yang wajib diikuti oleh seluruh calon anggota baru Koperasi Mahasiswa Universitas Siliwangi. Melalui kegiatan ini, peserta diberikan pembekalan intensif seputar sejarah gerakan koperasi, prinsip-prinsip dasar jati diri koperasi (ICA), struktur kelembagaan, hak dan kewajiban anggota, hingga etika berorganisasi. Kegiatan ini juga dikemas dengan studi kasus kepengurusan, simulasi rapat anggota, dan sesi interaktif bersama pemateri berpengalaman guna menumbuhkan jiwa wirausaha kolektif dan loyalitas sejak dini.',
+      'Pendidikan Dasar Koperasi (DIKSARKOP) I merupakan tahapan kaderisasi awal yang wajib diikuti oleh seluruh calon anggota baru Koperasi Mahasiswa Universitas Siliwangi. Melalui kegiatan ini, peserta diberikan pembekalan intensif seputar sejarah gerakan koperasi, prinsip-prinsip dasar koperasi, struktur kelembagaan, hak dan kewajiban anggota, hingga etika berorganisasi. Kegiatan ini juga terdapat sesi interaktif bersama pemateri berpengalaman guna menumbuhkan jiwa wirausaha kolektif dan loyalitas sejak dini.',
     highlights: [
       'Pengenalan Jati Diri & 7 Prinsip Koperasi Mahasiswa',
-      'Simulasi Tata Kelola & Struktur Organisasi KOPMA UNSIL',
       'Sesi Pembinaan Karakter & Keakraban Kader Angkatan 2026',
     ],
     photosCount: 7,
@@ -42,7 +41,7 @@ export const documentationEvents: EventDoc[] = [
       },
       {
         url: '/DIKSARKOP%201/IMG_0459.webp',
-        caption: 'Suasana pembukaan DIKSARKOP I bersama jajaran pengurus PSDA.',
+        caption: 'Suasana pembukaan DIKSARKOP I bersama jajaran pengurus KOPMA UNSIL.',
       },
       {
         url: '/DIKSARKOP%201/IMG_4750.webp',
@@ -70,16 +69,15 @@ export const documentationEvents: EventDoc[] = [
     id: 'doc-lpjs-2026',
     title: 'Laporan Pertanggungjawaban Semester (LPJS) 2026',
     category: 'LPJS & Musyawarah',
-    date: '30 Juli 2026',
-    location: 'Ruang Sidang Utama KOPMA UNSIL',
+    date: '30 - 31 Juli 2026',
+    location: 'hybrid (Zoom Meeting dan Gedung K.D.2.6 dan K.D.2.7 FKIP)',
     summary:
       'Forum evaluasi kinerja paruh waktu kepengurusan KOPMA UNSIL periode 2026, memaparkan capaian program kerja bidang, evaluasi unit usaha, serta keuangan semester berjalan.',
     description:
-      'Laporan Pertanggungjawaban Semester (LPJS) 2026 merupakan forum musyawarah formal paruh periode kepengurusan KOPMA UNSIL. Agenda ini menjadi panggung transparansi di mana Pengurus memaparkan realisasi program kerja, sirkulasi keuangan organisasi, serta performa lini unit usaha (toko, kafetaria, dan jasa) kepada Dewan Pengawas dan perwakilan Anggota Aktif. Berbagai masukan kritis, rekomendasi strategis sidang komisi, serta resolusi operasional disepakati demi mematangkan langkah organisasi menyongsong semester kedua dan persiapan Rapat Anggota Tahunan (RAT).',
+      'Laporan Pertanggungjawaban Semester (LPJS) 2026 merupakan forum musyawarah formal paruh periode kepengurusan KOPMA UNSIL. Agenda ini menjadi panggung transparansi di mana Pengurus memaparkan realisasi program kerja, sirkulasi keuangan organisasi, serta performa unit usaha kepada Badan Pengawas dan Anggota. Berbagai masukan kritis, rekomendasi strategis sidang komisi, serta resolusi operasional disepakati demi mematangkan langkah organisasi menyongsong persiapan Rapat Anggota Tahunan (RAT).',
     highlights: [
-      'Pemaparan Transparansi Keuangan & Profit Unit Usaha Semester I',
-      'Evaluasi Capaian Program Kerja Bidang PSDA, Usaha & Humas',
-      'Sidang Komisi Perumusan Rekomendasi Menuju RAT 2026',
+      'Pemaparan Transparansi Keuangan & Profit Unit Usaha',
+      'Evaluasi Capaian Program Kerja KOPMA UNSIL',
     ],
     photosCount: 12,
     coverImage: '/LPJS%202026/MVIMG_20260730_094158.webp',
@@ -87,7 +85,7 @@ export const documentationEvents: EventDoc[] = [
     gallery: [
       {
         url: '/LPJS%202026/MVIMG_20260730_094158.webp',
-        caption: 'Pemaparan laporan pertanggungjawaban oleh pengurus harian.',
+        caption: 'Pemaparan laporan pertanggungjawaban oleh pegawas dan pengurus',
       },
       {
         url: '/LPJS%202026/MVIMG_20260730_093855.webp',
@@ -139,16 +137,16 @@ export const documentationEvents: EventDoc[] = [
     id: 'doc-temu-anggota-1',
     title: 'Temu Anggota I: Sinergi & Silaturahmi',
     category: 'Temu Anggota',
-    date: '18 April 2026',
-    location: 'Student Center & Area Terbuka Kampus 1 Siliwangi',
+    date: '19 April 2026',
+    location: 'Gedung Trigatra, Universitas Siliwangi',
     summary:
-      'Ajang temu dan silaturahmi seluruh anggota KOPMA UNSIL untuk mempererat persaudaraan, berbagi aspirasi, games interaktif, dan sosialisasi program kerja PSDA.',
+      'Ajang temu dan silaturahmi seluruh anggota KOPMA UNSIL untuk mempererat persaudaraan, berbagi aspirasi, games interaktif, dan sosialisasi program kerja KOPMA.',
     description:
-      'Temu Anggota I diselenggarakan sebagai sarana konsolidasi emosional dan silaturahmi terbuka antara pengurus dan anggota umum KOPMA UNSIL lintas fakultas. Mengusung tema "Sinergi & Silaturahmi", agenda ini diisi dengan ice-breaking interaktif, team building games di area terbuka, penyampaian sosialisasi sistem reward keaktifan anggota oleh bidang PSDA, serta forum dengar aspirasi anggota. Suasana hangat ini bertujuan memperkuat rasa kepemilikan (sense of belonging) anggota terhadap unit usaha dan aktivitas organisasi.',
+      'Temu Anggota I diselenggarakan sebagai sarana silaturahmi terbuka antara pengurus dan anggota KOPMA UNSIL. Mengusung tema "Membangun Harmoni Organisasi dalam Mewujudkan KOPMA yang Adaptif, Inovatif, dan Berkelanjutan", agenda ini diisi dengan ice-breaking , team building games, penyampaian RAPBK, sistem reward keaktifan anggota oleh pengurus KOPMA UNSIL. Suasana hangat ini bertujuan memperkuat rasa kepemilikan (sense of belonging) anggota terhadap KOPMA UNSIL',
     highlights: [
-      'Ice Breaking & Dinamika Kelompok Pembina Keakraban Anggota',
-      'Sosialisasi Roadmap Pembinaan Anggota Bidang PSDA',
-      'Forum Dengar Aspirasi & Masukan Pengelolaan Koperasi',
+      'Pengenalana Kepengurusan Baru',
+      'Pemaparan RAPBK',
+      'Forum Dengar Aspirasi & Masukan Pengelolaan',
     ],
     photosCount: 18,
     coverImage: '/Temu%20Anggota%201/IMG_9463.webp',
@@ -168,7 +166,7 @@ export const documentationEvents: EventDoc[] = [
       },
       {
         url: '/Temu%20Anggota%201/IMG_9507.webp',
-        caption: 'Sosialisasi agenda dan program pengembangan anggota bidang PSDA.',
+        caption: 'Sosialisasi agenda dan program pengembangan anggota KOPMA UNSIL.',
       },
       {
         url: '/Temu%20Anggota%201/IMG_9511.webp',
@@ -232,16 +230,14 @@ export const documentationEvents: EventDoc[] = [
     id: 'doc-temu-anggota-2',
     title: 'Temu Anggota II: Evaluasi & Kebersamaan',
     category: 'Temu Anggota',
-    date: '12 September 2026',
-    location: 'Student Center & Ruang Pertemuan UNSIL',
+    date: '10 Oktober 2026',
+    location: 'Gedung FKIP',
     summary:
-      'Lanjutan pertemuan anggota kedua untuk evaluasi keterlibatan anggota dalam kepanitiaan, pengumuman reward point PSDA semester, serta penguatan solidaritas organisasi.',
+      'Lanjutan pertemuan anggota kedua untuk evaluasi keterlibatan anggota dalam kepanitiaan, pengumuman reward point keaktifan semester, serta penguatan solidaritas organisasi.',
     description:
-      'Temu Anggota II merupakan kelanjutan dari program pembinaan berkesinambungan bidang PSDA guna mengevaluasi keterlibatan dan partisipasi anggota dalam berbagai kepanitiaan dan kegiatan kampus. Selain memaparkan akumulasi skor keaktifan anggota (member activity points), kegiatan ini menghadirkan sesi refleksi bersama alumni dan demisioner, penganugerahan anggota teraktif semester, serta persiapan regenerasi kepengurusan menyongsong Rapat Anggota Tahunan (RAT).',
+      'Temu Anggota merupakan acara yang menjadi wadah silaturahmi untuk menjalin tali persaudaraan antar seluruh elemen KOPMA UNSIL. Mengusung tema: "Membangun Harmoni Organisasi dalam Mewujudkan KOPMA yang Adaptif, Inovatif, dan Berkelanjutan."' ,
     highlights: [
-      'Pemberian Penghargaan & Apresiasi Anggota Teraktif Semester',
       'Sharing Inspiratif Bersama Alumni & Demisioner Pengurus',
-      'Konsolidasi Kesiapan Partisipasi Anggota dalam RAT',
     ],
     photosCount: 16,
     coverImage: '/Temu%20Anggota%202/IMG_8794.webp',
@@ -249,7 +245,7 @@ export const documentationEvents: EventDoc[] = [
     gallery: [
       {
         url: '/Temu%20Anggota%202/IMG_8794.webp',
-        caption: 'Pembukaan Temu Anggota II oleh pengurus PSDA KOPMA.',
+        caption: 'Temu Anggota II oleh pengurus KOPMA UNSIL.',
       },
       {
         url: '/Temu%20Anggota%202/IMG_8798.webp',
@@ -305,7 +301,7 @@ export const documentationEvents: EventDoc[] = [
       },
       {
         url: '/Temu%20Anggota%202/IMG_9097.webp',
-        caption: 'Foto bersama panitia bidang PSDA Temu Anggota II.',
+        caption: 'Foto bersama panitia Temu Anggota II.',
       },
       {
         url: '/Temu%20Anggota%202/IMG_9111.webp',

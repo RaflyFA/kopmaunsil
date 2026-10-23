@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Award, BookCheck, CheckCircle2, Circle, Flame, Sparkles, TrendingUp } from 'lucide-react'
 import { getStoredData, setStoredData, STORAGE_KEYS } from '@/lib/storage'
+import { getMemberBaperkuProgress, toggleModuleProgress } from '@/lib/baperku/actions'
 import { modules } from '@/data/baperku'
 
 // 1. Reading Progress Bar at the top of the viewport
@@ -34,34 +35,75 @@ export function ReadingProgressBar() {
 // 2. Button to toggle completion of a specific module
 export function ModuleCompletionToggle({ slug, title }: { slug: string; title: string }) {
   const [isCompleted, setIsCompleted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
 
   useEffect(() => {
-    const checkStatus = () => {
-      const list = getStoredData<string[]>(STORAGE_KEYS.COMPLETED_MODULES, [])
-      setIsCompleted(list.includes(slug))
-    }
-    checkStatus()
+    let isMounted = true
 
-    const onStorageChange = () => checkStatus()
-    window.addEventListener('kopma-storage-updated', onStorageChange)
-    return () => window.removeEventListener('kopma-storage-updated', onStorageChange)
+    // Bersihkan legacy dummy progress jika ada di browser
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('kopma_completed_modules')
+    }
+
+    async function fetchStatus() {
+      try {
+        const progress = await getMemberBaperkuProgress()
+        if (isMounted) {
+          setIsCompleted(progress.completedModules.includes(slug))
+        }
+      } catch (err) {
+        console.error('Error fetching module completion:', err)
+      }
+    }
+    fetchStatus()
+
+    const onProgressUpdated = (e: Event) => {
+      const customEvent = e as CustomEvent<string[]>
+      if (customEvent.detail && Array.isArray(customEvent.detail)) {
+        setIsCompleted(customEvent.detail.includes(slug))
+      } else {
+        fetchStatus()
+      }
+    }
+
+    window.addEventListener('kopma-baperku-updated', onProgressUpdated)
+    return () => {
+      isMounted = false
+      window.removeEventListener('kopma-baperku-updated', onProgressUpdated)
+    }
   }, [slug])
 
-  const toggle = () => {
-    const list = getStoredData<string[]>(STORAGE_KEYS.COMPLETED_MODULES, [])
-    let updated: string[]
+  const toggle = async () => {
+    if (isLoading) return
+    setIsLoading(true)
 
-    if (list.includes(slug)) {
-      updated = list.filter((item) => item !== slug)
-      setIsCompleted(false)
-    } else {
-      updated = [...list, slug]
-      setIsCompleted(true)
+    // Optimistic toggle
+    const nextStatus = !isCompleted
+    setIsCompleted(nextStatus)
+    if (nextStatus) {
       setShowCelebration(true)
       setTimeout(() => setShowCelebration(false), 3000)
     }
-    setStoredData(STORAGE_KEYS.COMPLETED_MODULES, updated)
+
+    try {
+      const res = await toggleModuleProgress(slug)
+      if (res.success && res.completedModules) {
+        setIsCompleted(res.isCompleted ?? nextStatus)
+        window.dispatchEvent(
+          new CustomEvent('kopma-baperku-updated', { detail: res.completedModules })
+        )
+      } else if (res.error) {
+        // Rollback jika gagal
+        setIsCompleted(!nextStatus)
+        alert(res.error)
+      }
+    } catch (err) {
+      setIsCompleted(!nextStatus)
+      console.error('Failed to toggle module:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -78,11 +120,12 @@ export function ModuleCompletionToggle({ slug, title }: { slug: string; title: s
 
         <button
           onClick={toggle}
+          disabled={isLoading}
           className={`inline-flex min-h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-all shadow-sm ${
             isCompleted
               ? 'bg-emerald-600 text-white hover:bg-emerald-700'
               : 'border border-[#0133C6] bg-white text-[#0133C6] hover:bg-[#0133C6]/5'
-          }`}
+          } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
         >
           {isCompleted ? (
             <>
@@ -95,27 +138,53 @@ export function ModuleCompletionToggle({ slug, title }: { slug: string; title: s
           )}
         </button>
       </div>
-
-      
     </div>
   )
 }
 
 // 3. Overall Learning Progress Dashboard Card
-export function LearningProgressCard() {
-  const [completedList, setCompletedList] = useState<string[]>([])
+export function LearningProgressCard({ initialCompletedList }: { initialCompletedList?: string[] }) {
+  const [completedList, setCompletedList] = useState<string[]>(initialCompletedList || [])
+  const [isLoaded, setIsLoaded] = useState(initialCompletedList !== undefined)
   const total = modules.length
 
   useEffect(() => {
-    const update = () => {
-      const list = getStoredData<string[]>(STORAGE_KEYS.COMPLETED_MODULES, [])
-      setCompletedList(list)
-    }
-    update()
+    let isMounted = true
 
-    const onStorageChange = () => update()
-    window.addEventListener('kopma-storage-updated', onStorageChange)
-    return () => window.removeEventListener('kopma-storage-updated', onStorageChange)
+    // Bersihkan legacy dummy browser data
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('kopma_completed_modules')
+    }
+
+    async function loadRealProgress() {
+      try {
+        const progress = await getMemberBaperkuProgress()
+        if (isMounted) {
+          setCompletedList(progress.completedModules)
+          setIsLoaded(true)
+        }
+      } catch (err) {
+        console.error('Error loading member progress:', err)
+        if (isMounted) setIsLoaded(true)
+      }
+    }
+
+    loadRealProgress()
+
+    const onProgressUpdated = (e: Event) => {
+      const customEvent = e as CustomEvent<string[]>
+      if (customEvent.detail && Array.isArray(customEvent.detail)) {
+        setCompletedList(customEvent.detail)
+      } else {
+        loadRealProgress()
+      }
+    }
+
+    window.addEventListener('kopma-baperku-updated', onProgressUpdated)
+    return () => {
+      isMounted = false
+      window.removeEventListener('kopma-baperku-updated', onProgressUpdated)
+    }
   }, [])
 
   const count = completedList.length
@@ -125,9 +194,7 @@ export function LearningProgressCard() {
     <div className="relative overflow-hidden rounded-2xl border border-[#0133C6]/15 bg-gradient-to-br from-white via-blue-50/40 to-slate-50 p-5 shadow-sm">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-[#0133C6] text-white shadow-md shadow-[#0133C6]/20">
-            <BookCheck className="size-5" />
-          </div>
+          
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-bold text-slate-900">Rapor Belajar BAPERKU</h3>
@@ -138,7 +205,9 @@ export function LearningProgressCard() {
               )}
             </div>
             <p className="text-xs text-slate-500">
-              {count === 0
+              {!isLoaded
+                ? 'Memuat data progres akun...'
+                : count === 0
                 ? 'Mulai baca materi untuk mengumpulkan poin dan mengasah pemahaman.'
                 : `${count} dari ${total} materi telah kamu selesaikan.`}
             </p>
@@ -146,7 +215,7 @@ export function LearningProgressCard() {
         </div>
 
         <div className="text-right">
-          <span className="text-2xl font-black text-[#0133C6]">{percentage}%</span>
+          <span className="text-2xl font-black text-[#0133C6]">{isLoaded ? `${percentage}%` : '...'}</span>
           <span className="block text-[10px] uppercase tracking-wider text-slate-400 font-bold">Progres</span>
         </div>
       </div>
@@ -155,13 +224,12 @@ export function LearningProgressCard() {
       <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
         <div
           className="h-full rounded-full bg-gradient-to-r from-[#0133C6] to-cyan-500 transition-all duration-500"
-          style={{ width: `${percentage}%` }}
+          style={{ width: `${isLoaded ? percentage : 0}%` }}
         />
       </div>
 
       <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
         <span className="flex items-center gap-1 font-medium">
-          
           {count > 0 ? `${count} modul tuntas` : 'Belum ada modul tuntas'}
         </span>
         <span className="flex items-center gap-1">

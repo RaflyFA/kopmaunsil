@@ -95,35 +95,46 @@ export function DokumentasiGallery() {
   return (
     <div className="mt-8">
       {/* Search and Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between">
+        {/* Search Input */}
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari dokumentasi kegiatan (contoh: DIKSARKOP, LPJS, Temu Anggota)..."
+            className="min-h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition-all outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
+              title="Hapus pencarian"
+            >
+              <X className="size-4" />
+            </button>
+          )}
+        </div>
+
         {/* Category Chips */}
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
           {categories.map((cat) => (
             <button
               key={cat}
               type="button"
               suppressHydrationWarning
               onClick={() => setActiveCategory(cat)}
-              className={`min-h-10 shrink-0 rounded-full px-4 text-xs font-semibold transition-all ${
+              className={`min-h-11 shrink-0 rounded-xl px-4 text-xs font-semibold transition-all ${
                 activeCategory === cat
-                  ? 'bg-[#0133C6] text-white shadow-sm'
-                  : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                  ? 'bg-[#0133C6] text-white shadow-md shadow-[#0133C6]/20'
+                  : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
               }`}
             >
               {cat}
             </button>
           ))}
-        </div>
-
-        {/* Search Input */}
-        <div className="relative min-w-[240px]">
-          <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari dokumentasi kegiatan..."
-            className="min-h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-xs outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10"
-          />
         </div>
       </div>
 
@@ -212,9 +223,28 @@ export function DokumentasiGallery() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="mt-12 rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500">
-          <ImageIcon className="mx-auto size-8 text-slate-300" />
-          <p className="mt-3 text-sm font-semibold">Tidak ada kegiatan yang cocok dengan pencarian.</p>
+        <div className="mt-12 flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/60 p-12 text-center">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-white shadow-sm border border-slate-100 text-[#0133C6]">
+            <ImageIcon className="size-7 text-slate-400" />
+          </div>
+          <h4 className="mt-4 text-base font-bold text-slate-800">
+            Tidak ada kegiatan yang cocok
+          </h4>
+          <p className="mt-1 text-xs text-slate-500">
+            Coba gunakan kata kunci lain atau pilih kategori &ldquo;Semua&rdquo;.
+          </p>
+          {(searchQuery || activeCategory !== 'Semua') && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('')
+                setActiveCategory('Semua')
+              }}
+              className="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition shadow-sm"
+            >
+              Reset Pencarian & Filter
+            </button>
+          )}
         </div>
       )}
 
@@ -249,13 +279,15 @@ export function DokumentasiGallery() {
 
             {/* Scrollable Body: Main Photo, Thumbnails, then Detailed Event Information */}
             <div className="flex-1 overflow-y-auto overscroll-contain">
-              {/* Main Active Photo View */}
-              <div className="relative flex min-h-[300px] items-center justify-center bg-slate-100/70 p-4 sm:p-6 md:min-h-[420px]">
-                <img
-                  src={selectedEvent.gallery[currentPhotoIdx]?.url || selectedEvent.coverImage}
-                  alt={selectedEvent.gallery[currentPhotoIdx]?.caption || selectedEvent.title}
-                  className="max-h-[52vh] w-full rounded-2xl object-contain shadow-sm"
-                />
+              {/* Main Active Photo View (Tinggi tetap responsif agar foto vertikal tidak memanjang berlebihan di HP) */}
+              <div className="relative flex h-[250px] w-full items-center justify-center bg-slate-100/80 p-3 sm:h-[380px] sm:p-5 md:h-[430px]">
+                <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl">
+                  <img
+                    src={selectedEvent.gallery[currentPhotoIdx]?.url || selectedEvent.coverImage}
+                    alt={selectedEvent.gallery[currentPhotoIdx]?.caption || selectedEvent.title}
+                    className="h-full w-full rounded-2xl object-contain shadow-sm"
+                  />
+                </div>
 
                 {/* Prev / Next Arrows */}
                 {selectedEvent.gallery.length > 1 && (
@@ -267,29 +299,29 @@ export function DokumentasiGallery() {
                           (prev) => (prev - 1 + selectedEvent.gallery.length) % selectedEvent.gallery.length
                         )
                       }
-                      className="absolute left-6 flex size-10 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-700 shadow-md backdrop-blur transition hover:bg-white hover:text-[#0133C6] hover:scale-105"
+                      className="absolute left-3 z-10 flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-700 shadow-md backdrop-blur transition hover:scale-105 hover:bg-white hover:text-[#0133C6] sm:left-6 sm:size-10"
                       aria-label="Foto sebelumnya"
                     >
-                      <ChevronLeft className="size-6" />
+                      <ChevronLeft className="size-4 sm:size-6" />
                     </button>
                     <button
                       type="button"
                       onClick={() =>
                         setCurrentPhotoIdx((prev) => (prev + 1) % selectedEvent.gallery.length)
                       }
-                      className="absolute right-6 flex size-10 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-700 shadow-md backdrop-blur transition hover:bg-white hover:text-[#0133C6] hover:scale-105"
+                      className="absolute right-3 z-10 flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-700 shadow-md backdrop-blur transition hover:scale-105 hover:bg-white hover:text-[#0133C6] sm:right-6 sm:size-10"
                       aria-label="Foto berikutnya"
                     >
-                      <ChevronRight className="size-6" />
+                      <ChevronRight className="size-4 sm:size-6" />
                     </button>
                   </>
                 )}
               </div>
 
               {/* Caption & Thumbnails strip */}
-              <div className="border-t border-slate-100 bg-white px-6 py-4">
+              <div className="border-t border-slate-100 bg-white px-4 py-3 sm:px-6 sm:py-4">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium leading-relaxed text-slate-800">
+                  <p className="text-xs font-medium leading-relaxed text-slate-800 sm:text-sm">
                     {selectedEvent.gallery[currentPhotoIdx]?.caption || selectedEvent.summary}
                   </p>
                   <span className="shrink-0 rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">

@@ -15,6 +15,10 @@ import { documentationEvents } from '@/data/dokumentasi'
 import { PortalShell, SectionTitle } from '@/components/portal-shell'
 import { KtaCard } from '@/components/kta-card'
 import { LearningProgressCard } from '@/components/progress-tracker'
+import { getCurrentMember } from '@/lib/auth/actions'
+import { getMemberBaperkuProgress } from '@/lib/baperku/actions'
+
+export const dynamic = 'force-dynamic'
 
 const quickLinks = [
   {
@@ -43,11 +47,13 @@ const quickLinks = [
   },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const member = await getCurrentMember()
+  const progress = await getMemberBaperkuProgress()
   const latestEvent = documentationEvents[0]
 
   return (
-    <PortalShell>
+    <PortalShell member={member}>
       {/* Hero Welcome Banner */}
       <section className="relative -mx-4 overflow-hidden bg-gradient-to-br from-[#0133C6] via-[#0952B6] to-[#041E62] px-6 pb-12 pt-10 text-white shadow-xl md:mx-0 md:mt-8 md:rounded-3xl md:px-10">
         {/* Decorative Circles */}
@@ -59,21 +65,32 @@ export default function HomePage() {
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
                 <Sparkles className="size-3 text-amber-300" />
-                Portal Anggota KOPMA UNSIL 2026
+                KOPMA UNSIL 2026
               </span>
               <p className="mt-2 text-xl font-black md:text-2xl">BAPERKU Digital</p>
             </div>
 
-            <Link
-              href="/login"
-              title="Profil Anggota"
-              className="flex size-11 items-center justify-center rounded-2xl bg-white/20 text-sm font-bold shadow-inner ring-2 ring-white/30 backdrop-blur transition hover:scale-105"
-            >
-              AR
-            </Link>
+            {member ? (
+              <div
+                title={`Masuk sebagai ${member.nama_lengkap}`}
+                className="flex size-11 items-center justify-center rounded-2xl bg-white/20 text-sm font-black shadow-inner ring-2 ring-white/30 backdrop-blur transition hover:scale-105"
+              >
+                {member.initials}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                title="Masuk ke Akun"
+                className="flex h-10 items-center justify-center rounded-xl bg-white/20 px-4 text-xs font-bold text-white shadow-inner ring-1 ring-white/30 backdrop-blur transition hover:bg-white/30"
+              >
+                Masuk
+              </Link>
+            )}
           </div>
 
-          <p className="text-sm font-medium text-white/80">Halo, Anggota Koperasi Mahasiswa</p>
+          <p className="text-sm font-medium text-white/80">
+            {member ? `Halo, ${member.nama_lengkap}` : 'Halo, Anggota Koperasi Mahasiswa'}
+          </p>
           <h1 className="mt-2 max-w-xl text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">
             Belajar, bertumbuh, dan berdaya bersama KOPMA UNSIL.
           </h1>
@@ -94,31 +111,27 @@ export default function HomePage() {
 
       {/* Grid: Interactive Member KTA Card + Learning Progress Card */}
       <section className="mt-8 grid gap-6 md:grid-cols-2">
-        <KtaCard />
+        <KtaCard member={member} />
         <div className="flex flex-col justify-between gap-4">
-          <LearningProgressCard />
+          <LearningProgressCard initialCompletedList={progress.completedModules} />
 
           {/* Quick Info Box: DIKMENKOP Next Event */}
           <div className="rounded-3xl border border-[#0133C6]/20 bg-gradient-to-br from-blue-50/80 to-white p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#0133C6] shadow-sm">
-                  <span className="size-1.5 rounded-full bg-[#0133C6]" />
-                  Segera Hadir
-                </span>
                 <h3 className="mt-2.5 text-base font-bold text-slate-900">
                   DIKMENKOP: Manajemen & Keorganisasian Koperasi
                 </h3>
                 <p className="mt-1 flex items-center gap-2 text-xs text-slate-500">
                   <CalendarDays className="size-3.5 text-[#0133C6]" />
-                  Jadwal pendaftaran akan diumumkan bidang PSDA
+                  Jadwal pendaftaran akan diumumkan pengurus KOPMA UNSIL
                 </p>
               </div>
               <Sparkles className="size-8 text-[#0133C6]/20 shrink-0" />
             </div>
 
             <div className="mt-4 flex items-center justify-between border-t border-slate-200/60 pt-3 text-xs">
-              <span className="text-slate-500">Dapatkan +2 Poin PSDA</span>
+              <span className="text-slate-500">Dapatkan +2 Poin Keaktifan</span>
               <Link
                 href="/baperku/dikmenkop-manajemen-koperasi"
                 className="font-bold text-[#0133C6] hover:underline flex items-center gap-1"
@@ -198,7 +211,6 @@ export default function HomePage() {
         {/* Latest BAPERKU Modules */}
         <div className="flex flex-col justify-between rounded-3xl border border-[#0133C6]/15 bg-gradient-to-b from-[#0133C6]/5 to-white p-5 md:col-span-5 md:p-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#0133C6]">Mulai dari Sini</p>
             <h2 className="mt-1 text-lg font-bold text-slate-900">Materi Edukasi Pilihan</h2>
             <p className="mt-1 text-xs text-slate-500">Dilengkapi kuis pemahaman dan pencatatan rapor belajar.</p>
 
@@ -228,34 +240,13 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* Agenda Section */}
-      <section className="mt-10 pb-6">
-        <SectionTitle title="Agenda & Momen Anggota" href="/dokumentasi" label="Lihat Arsip Lengkap" />
-        <div className="grid gap-3 sm:grid-cols-3">
-          {documentationEvents.slice(0, 3).map((event) => (
-            <div
-              key={event.id}
-              className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-            >
-              <div>
-                <span className="inline-block rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-[#0133C6]">
-                  {event.category}
-                </span>
-                <h3 className="mt-2 text-xs font-bold leading-5 text-slate-900">{event.title}</h3>
-              </div>
-              <p className="mt-3 text-[11px] text-slate-400">{event.date} · {event.photosCount} Foto</p>
-            </div>
-          ))}
-        </div>
-      </section>
     </PortalShell>
   )
 }
 
 export async function generateMetadata() {
   return {
-    title: 'Beranda | Portal Anggota KOPMA UNSIL',
-    description: 'Portal digital BAPERKU dan ruang interaksi anggota Koperasi Mahasiswa Universitas Siliwangi',
+    title: 'Beranda | KOPMA UNSIL',
+    description: 'BAPERKU Digital dan ruang interaksi resmi anggota Koperasi Mahasiswa Universitas Siliwangi',
   }
 }

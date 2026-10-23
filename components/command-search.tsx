@@ -175,7 +175,7 @@ export function CommandSearch() {
 
             {/* Modal Footer */}
             <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-4 py-2.5 text-[11px] text-slate-400">
-              <span>Navigasi instan Portal Anggota KOPMA UNSIL</span>
+              <span>Navigasi cepat KOPMA UNSIL</span>
               <span>Tekan ESC untuk menutup</span>
             </div>
           </div>

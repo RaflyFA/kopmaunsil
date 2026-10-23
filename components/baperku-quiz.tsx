@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { moduleQuizzes, QuizQuestion } from '@/data/quizzes'
 import { getStoredData, setStoredData, STORAGE_KEYS } from '@/lib/storage'
+import { getMemberBaperkuProgress, saveQuizResult } from '@/lib/baperku/actions'
 
 export function BaperkuQuiz({ moduleSlug, moduleTitle }: { moduleSlug: string; moduleTitle: string }) {
   const questions: QuizQuestion[] = moduleQuizzes[moduleSlug] || []
@@ -30,12 +31,21 @@ export function BaperkuQuiz({ moduleSlug, moduleTitle }: { moduleSlug: string; m
   const [storedScore, setStoredScore] = useState<{ score: number; maxScore: number } | null>(null)
 
   useEffect(() => {
-    const results = getStoredData<Record<string, { score: number; maxScore: number }>>(
-      STORAGE_KEYS.QUIZ_RESULTS,
-      {}
-    )
-    if (results[moduleSlug]) {
-      setStoredScore(results[moduleSlug])
+    let isMounted = true
+    async function loadScore() {
+      try {
+        const { quizScores } = await getMemberBaperkuProgress()
+        if (isMounted && quizScores[moduleSlug]) {
+          setStoredScore(quizScores[moduleSlug])
+        }
+      } catch (err) {
+        console.error('Failed to load quiz score:', err)
+      }
+    }
+    loadScore()
+
+    return () => {
+      isMounted = false
     }
   }, [moduleSlug])
 
@@ -58,30 +68,27 @@ export function BaperkuQuiz({ moduleSlug, moduleTitle }: { moduleSlug: string; m
     }
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex((prev) => prev + 1)
       setSelectedOption(null)
       setIsSubmitted(false)
     } else {
       // Quiz completed!
-      const finalScore = selectedOption === currentQ.correctIndex ? score : score
+      const finalScore = selectedOption === currentQ.correctIndex ? score + 1 : score
       setIsCompleted(true)
+      setStoredScore({ score: finalScore, maxScore: questions.length })
 
-      // Save to localStorage
-      const results = getStoredData<Record<string, { score: number; maxScore: number }>>(
-        STORAGE_KEYS.QUIZ_RESULTS,
-        {}
-      )
-      results[moduleSlug] = { score: finalScore, maxScore: questions.length }
-      setStoredData(STORAGE_KEYS.QUIZ_RESULTS, results)
-      setStoredScore(results[moduleSlug])
-
-      // Automatically mark module as completed in learning progress!
-      const completed = getStoredData<string[]>(STORAGE_KEYS.COMPLETED_MODULES, [])
-      if (!completed.includes(moduleSlug)) {
-        completed.push(moduleSlug)
-        setStoredData(STORAGE_KEYS.COMPLETED_MODULES, completed)
+      // Save to Supabase
+      try {
+        const res = await saveQuizResult(moduleSlug, finalScore, questions.length)
+        if (res.success && res.completedModules) {
+          window.dispatchEvent(
+            new CustomEvent('kopma-baperku-updated', { detail: res.completedModules })
+          )
+        }
+      } catch (err) {
+        console.error('Failed to save quiz result to Supabase:', err)
       }
     }
   }

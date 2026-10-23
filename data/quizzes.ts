@@ -124,10 +124,10 @@ export const moduleQuizzes: Record<string, QuizQuestion[]> = {
   'dikmenkop-shu': [
     {
       id: 'q1',
-      question: 'Berapa poin keaktifan PSDA yang didapatkan seorang anggota jika bertugas sebagai panitia acara?',
+      question: 'Berapa poin keaktifan yang didapatkan seorang anggota jika bertugas sebagai panitia acara?',
       options: ['0.5 poin', '1 poin', '2 poin', '5 poin'],
       correctIndex: 2,
-      explanation: 'Kepanitiaan bernilai 2 poin PSDA, sedangkan hadir rapat/peserta bernilai 1 poin.',
+      explanation: 'Kepanitiaan bernilai 2 poin keaktifan, sedangkan hadir rapat/peserta bernilai 1 poin.',
     },
     {
       id: 'q2',

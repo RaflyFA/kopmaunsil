@@ -1,22 +1,33 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Check,
   ChevronDown,
+  FileText,
   Filter,
   Flame,
+  GraduationCap,
   Heart,
+  Layers,
   Lightbulb,
   MessageSquare,
   Plus,
   Send,
   Sparkles,
+  Tag,
+  User,
   UserCheck,
   X,
 } from 'lucide-react'
 import { Aspiration, AspirationCategory, initialAspirations } from '@/data/aspirasi'
 import { getStoredData, setStoredData, STORAGE_KEYS } from '@/lib/storage'
+import { createClient } from '@/lib/supabase/client'
+import {
+  getAspirationsAction,
+  createAspirationAction,
+  toggleAspirationUpvoteAction,
+} from '@/lib/aspirasi/actions'
 
 const categories: ('Semua' | AspirationCategory)[] = [
   'Semua',
@@ -42,13 +53,69 @@ export function AspirasiBoard() {
   const [authorName, setAuthorName] = useState('')
   const [faculty, setFaculty] = useState('Fakultas Ekonomi & Bisnis')
 
-  // Load from localStorage or initial data
+  // Load aspirations directly from Supabase
   useEffect(() => {
-    const storedList = getStoredData<Aspiration[]>(STORAGE_KEYS.ASPIRATIONS, initialAspirations)
-    setAspirations(storedList)
+    let isMounted = true
 
-    const storedUpvotes = getStoredData<string[]>(STORAGE_KEYS.UPVOTED_ASPIRATIONS, [])
-    setUpvotedIds(storedUpvotes)
+    // Bersihkan legacy dummy browser data
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('kopma_aspirations')
+      window.localStorage.removeItem('kopma_upvoted_aspirations')
+    }
+
+    async function loadAspirations() {
+      try {
+        const res = await getAspirationsAction()
+        if (isMounted) {
+          setAspirations(res.aspirations)
+          setUpvotedIds(res.upvotedIds)
+        }
+      } catch (err) {
+        console.error('Failed to load aspirations from database:', err)
+      }
+    }
+
+    loadAspirations()
+
+    // Pre-fill user profile if logged in
+    async function loadUserProfile() {
+      try {
+        const supabase = createClient()
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (user) {
+          const { data: member } = await supabase
+            .from('members')
+            .select('nama_lengkap, nra')
+            .eq('id', user.id)
+            .maybeSingle()
+
+          if (member?.nama_lengkap) {
+            setAuthorName(member.nama_lengkap)
+          }
+
+          if (member?.nra) {
+            const { data: wl } = await supabase
+              .from('nra_whitelist')
+              .select('prodi, fakultas')
+              .eq('nra', member.nra)
+              .maybeSingle()
+
+            if (wl?.prodi) {
+              setFaculty(`${wl.prodi}${wl.fakultas ? ` • ${wl.fakultas}` : ''}`)
+            }
+          }
+        }
+      } catch {}
+    }
+
+    loadUserProfile()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const triggerToast = (msg: string) => {
@@ -56,62 +123,80 @@ export function AspirasiBoard() {
     setTimeout(() => setToastMessage(null), 3500)
   }
 
-  // Handle upvoting
-  const handleToggleUpvote = (id: string) => {
+  // Handle upvoting with Supabase database
+  const handleToggleUpvote = async (id: string) => {
     const isUpvoted = upvotedIds.includes(id)
-    let updatedUpvotedIds: string[]
-    let updatedList: Aspiration[]
+    const prevUpvotedIds = [...upvotedIds]
+    const prevAspirations = [...aspirations]
 
+    // Optimistic UI update
     if (isUpvoted) {
-      updatedUpvotedIds = upvotedIds.filter((item) => item !== id)
-      updatedList = aspirations.map((item) =>
-        item.id === id ? { ...item, upvotes: Math.max(0, item.upvotes - 1) } : item
+      setUpvotedIds(upvotedIds.filter((item) => item !== id))
+      setAspirations(
+        aspirations.map((item) =>
+          item.id === id ? { ...item, upvotes: Math.max(0, item.upvotes - 1) } : item
+        )
       )
     } else {
-      updatedUpvotedIds = [...upvotedIds, id]
-      updatedList = aspirations.map((item) =>
-        item.id === id ? { ...item, upvotes: item.upvotes + 1 } : item
+      setUpvotedIds([...upvotedIds, id])
+      setAspirations(
+        aspirations.map((item) =>
+          item.id === id ? { ...item, upvotes: item.upvotes + 1 } : item
+        )
       )
       triggerToast('Aspirasi berhasil kamu dukung! 👍')
     }
 
-    setUpvotedIds(updatedUpvotedIds)
-    setAspirations(updatedList)
-    setStoredData(STORAGE_KEYS.UPVOTED_ASPIRATIONS, updatedUpvotedIds)
-    setStoredData(STORAGE_KEYS.ASPIRATIONS, updatedList)
+    try {
+      const res = await toggleAspirationUpvoteAction(id)
+      if (!res.success && res.error) {
+        // Rollback
+        setUpvotedIds(prevUpvotedIds)
+        setAspirations(prevAspirations)
+        triggerToast(res.error)
+      } else if (res.upvotes !== undefined) {
+        setAspirations((current) =>
+          current.map((item) => (item.id === id ? { ...item, upvotes: res.upvotes! } : item))
+        )
+      }
+    } catch (err) {
+      setUpvotedIds(prevUpvotedIds)
+      setAspirations(prevAspirations)
+      console.error('Failed to toggle upvote:', err)
+    }
   }
 
-  // Handle submit new aspiration
-  const handleSubmit = (e: React.FormEvent) => {
+  // Handle submit new aspiration with Supabase database
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim() || !description.trim()) return
 
-    const newAspiration: Aspiration = {
-      id: `asp-${Date.now()}`,
-      title: title.trim(),
-      description: description.trim(),
-      category: category,
-      authorName: isAnonymous ? 'Anggota KOPMA' : authorName.trim() || 'Anggota KOPMA',
-      authorRole: isAnonymous ? 'Suara Anonim' : faculty,
-      createdAt: 'Baru saja',
-      upvotes: 1,
-      status: 'Ditinjau PSDA',
-      tags: [category.split(' ')[0], 'Aspirasi 2026'],
+    try {
+      const res = await createAspirationAction({
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        isAnonymous,
+        authorName,
+        faculty,
+      })
+
+      if (res.success && res.aspiration) {
+        setAspirations([res.aspiration, ...aspirations])
+        setUpvotedIds([...upvotedIds, res.aspiration.id])
+
+        // Reset Form
+        setTitle('')
+        setDescription('')
+        setShowModal(false)
+        triggerToast('Aspirasi kamu berhasil dikirimkan ke database KOPMA UNSIL! 🎉')
+      } else if (res.error) {
+        triggerToast(res.error)
+      }
+    } catch (err) {
+      console.error('Failed to create aspiration:', err)
+      triggerToast('Terjadi kesalahan saat mengirim aspirasi.')
     }
-
-    const updatedList = [newAspiration, ...aspirations]
-    const updatedUpvotes = [...upvotedIds, newAspiration.id]
-
-    setAspirations(updatedList)
-    setUpvotedIds(updatedUpvotes)
-    setStoredData(STORAGE_KEYS.ASPIRATIONS, updatedList)
-    setStoredData(STORAGE_KEYS.UPVOTED_ASPIRATIONS, updatedUpvotes)
-
-    // Reset Form
-    setTitle('')
-    setDescription('')
-    setShowModal(false)
-    triggerToast('Aspirasi kamu berhasil dikirimkan ke PSDA KOPMA UNSIL! 🎉')
   }
 
   // Filter & Sort
@@ -140,9 +225,9 @@ export function AspirasiBoard() {
       {/* Top Action Bar */}
       <div className="flex flex-col gap-4 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Suara & Usulan Anggota</h2>
+          <h2 className="text-xl font-bold text-slate-900">Suara & Aspirasi Anggota</h2>
           <p className="mt-0.5 text-xs text-slate-500">
-            Dukung ide kegiatan favoritmu atau sampaikan aspirasimu langsung ke bidang PSDA.
+            Dukung ide kegiatan favoritmu atau sampaikan aspirasimu langsung ke pengurus KOPMA UNSIL.
           </p>
         </div>
 
@@ -184,7 +269,7 @@ export function AspirasiBoard() {
                 sortBy === 'popular' ? 'bg-[#0133C6]/10 text-[#0133C6]' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
-              🔥 Terbanyak Didukung
+            Terbanyak Didukung
             </button>
             <button
               onClick={() => setSortBy('latest')}
@@ -192,7 +277,7 @@ export function AspirasiBoard() {
                 sortBy === 'latest' ? 'bg-[#0133C6]/10 text-[#0133C6]' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
-              🕒 Terbaru
+            Terbaru
             </button>
           </div>
         </div>
@@ -253,7 +338,7 @@ export function AspirasiBoard() {
                     <div className="mt-4 rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-3.5 text-xs text-slate-700">
                       <div className="flex items-center gap-1.5 font-bold text-emerald-800">
                         <Sparkles className="size-3.5 text-emerald-600" />
-                        Tanggapan Bidang PSDA:
+                        Tanggapan Pengurus KOPMA:
                       </div>
                       <p className="mt-1 leading-5 text-emerald-950">{item.adminResponse}</p>
                     </div>
@@ -281,10 +366,23 @@ export function AspirasiBoard() {
         })}
 
         {sorted.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500">
-            <Lightbulb className="mx-auto size-8 text-slate-300" />
-            <p className="mt-3 text-sm font-semibold">Belum ada aspirasi di kategori ini.</p>
-            <p className="mt-1 text-xs">Jadilah yang pertama menyampaikan ide kegiatan!</p>
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/60 p-12 text-center">
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-white shadow-sm border border-slate-100 text-[#0133C6]">
+              <Lightbulb className="size-7" />
+            </div>
+            <h4 className="mt-4 text-base font-bold text-slate-800">
+              {activeCategory === 'Semua' ? 'Belum Ada Aspirasi' : `Belum Ada Aspirasi di Kategori ${activeCategory}`}
+            </h4>
+            <p className="mt-1.5 max-w-sm text-xs text-slate-500 leading-relaxed">
+              Jadilah yang pertama menyampaikan usulan ide program, kegiatan, atau masukan untuk KOPMA UNSIL.
+            </p>
+            <button
+              onClick={() => setShowModal(true)}
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#0133C6] px-5 py-2.5 text-xs font-semibold text-white shadow-md shadow-[#0133C6]/20 transition hover:bg-[#0952B6]"
+            >
+              <Plus className="size-4" />
+              <span>Sampaikan Aspirasi Pertama</span>
+            </button>
           </div>
         )}
       </div>
@@ -292,116 +390,144 @@ export function AspirasiBoard() {
       {/* Modal Kirim Aspirasi */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl md:p-8 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-xl bg-[#0133C6]/10 text-[#0133C6]">
-                  <Send className="size-4" />
+          <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl md:p-8 animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#0133C6]/10 text-[#0133C6]">
+                  <Lightbulb className="size-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Sampaikan Aspirasi Baru</h3>
-                  <p className="text-xs text-slate-500">Usulan kamu akan langsung ditinjau oleh pengurus PSDA.</p>
+                  <h3 className="text-lg font-bold text-slate-900">Sampaikan Aspirasi Baru</h3>
+                  <p className="text-xs text-slate-500">Usulan kamu akan langsung ditinjau oleh pengurus KOPMA UNSIL.</p>
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setShowModal(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
               >
                 <X className="size-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
               {/* Category */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700">Kategori Usulan</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value as AspirationCategory)}
-                  className="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm font-medium outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10"
-                >
-                  <option value="Pelatihan & Skill">Pelatihan & Skill</option>
-                  <option value="Event & Gathering">Event & Gathering</option>
-                  <option value="Usaha & Fasilitas">Usaha & Fasilitas</option>
-                  <option value="Kritik & Saran">Kritik & Saran</option>
-                </select>
-              </div>
+              <label className="flex flex-col gap-1.5 text-xs font-normal text-slate-700">
+                Kategori Usulan
+                <div className="relative">
+                  <Layers className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value as AspirationCategory)}
+                    className="min-h-12 w-full appearance-none rounded-xl border border-slate-200 bg-white pl-10 pr-10 text-sm text-slate-900 transition-all outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10 cursor-pointer"
+                  >
+                    <option value="Pelatihan & Skill">Pelatihan & Skill</option>
+                    <option value="Event & Gathering">Event & Gathering</option>
+                    <option value="Usaha & Fasilitas">Usaha & Fasilitas</option>
+                    <option value="Kritik & Saran">Kritik & Saran</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                </div>
+              </label>
 
               {/* Title */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700">Judul Ide / Usulan</label>
-                <input
-                  required
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Contoh: Workshop Copywriting untuk Wirausaha Anggota"
-                  className="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 px-3.5 text-sm outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10"
-                />
-              </div>
+              <label className="flex flex-col gap-1.5 text-xs font-normal text-slate-700">
+                Judul Ide / Usulan
+                <div className="relative">
+                  <Tag className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                  <input
+                    required
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Contoh: Workshop Copywriting untuk Usaha Anggota"
+                    className="min-h-12 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-900 transition-all outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10 placeholder:text-slate-400"
+                  />
+                </div>
+              </label>
 
               {/* Description */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700">Penjelasan & Harapan</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Ceritakan mengapa kegiatan ini bermanfaat bagi anggota dan apa saja yang ingin dipelajari..."
-                  className="mt-1.5 w-full rounded-xl border border-slate-200 p-3.5 text-sm outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10"
-                />
-              </div>
+              <label className="flex flex-col gap-1.5 text-xs font-normal text-slate-700">
+                Penjelasan & Harapan
+                <div className="relative">
+                  <FileText className="pointer-events-none absolute left-3.5 top-3.5 size-4 text-slate-400" />
+                  <textarea
+                    required
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Ceritakan mengapa kegiatan ini bermanfaat bagi anggota dan apa saja yang ingin dipelajari..."
+                    className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-3 text-sm text-slate-900 transition-all outline-none focus:border-[#0133C6] focus:ring-4 focus:ring-[#0133C6]/10 placeholder:text-slate-400 resize-none"
+                  />
+                </div>
+              </label>
 
-              {/* Anonymous Toggle */}
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5">
-                <label className="flex cursor-pointer items-center justify-between text-xs font-bold text-slate-800">
-                  <span>Kirim Sebagai Suara Anonim</span>
+              {/* Anonymous Toggle Card */}
+              <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 transition-all">
+                <label className="flex cursor-pointer items-center justify-between text-xs font-normal text-slate-800">
+                  <div>
+                    <span className="font-semibold text-slate-900">Kirim Sebagai Suara Anonim</span>
+                    <p className="mt-0.5 text-[11px] text-slate-500">
+                      {isAnonymous
+                        ? 'Identitas dan NRA kamu disembunyikan'
+                        : 'Nama dan fakultas kamu akan ditampilkan di kartu aspirasi.'}
+                    </p>
+                  </div>
                   <input
                     type="checkbox"
                     checked={isAnonymous}
                     onChange={(e) => setIsAnonymous(e.target.checked)}
-                    className="size-4 rounded text-[#0133C6] focus:ring-[#0133C6]"
+                    className="size-4.5 rounded border-slate-300 text-[#0133C6] focus:ring-[#0133C6] cursor-pointer"
                   />
                 </label>
-                <p className="mt-1 text-[11px] text-slate-500 leading-4">
-                  {isAnonymous
-                    ? 'Identitas dan NPM kamu disembunyikan. Cocok untuk usulan bebas tanpa ragu.'
-                    : 'Nama dan fakultas kamu akan ditampilkan di kartu aspirasi.'}
-                </p>
 
                 {!isAnonymous && (
-                  <div className="mt-3 grid gap-2 pt-2 border-t border-slate-200/60 sm:grid-cols-2">
-                    <input
-                      value={authorName}
-                      onChange={(e) => setAuthorName(e.target.value)}
-                      placeholder="Nama Lengkap / Panggilan"
-                      className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-xs outline-none focus:border-[#0133C6]"
-                    />
-                    <input
-                      value={faculty}
-                      onChange={(e) => setFaculty(e.target.value)}
-                      placeholder="Fakultas / Prodi"
-                      className="min-h-10 rounded-lg border border-slate-200 bg-white px-3 text-xs outline-none focus:border-[#0133C6]"
-                    />
+                  <div className="mt-4 grid gap-3 pt-3 border-t border-slate-200/60 sm:grid-cols-2">
+                    <label className="flex flex-col gap-1 text-xs font-normal text-slate-700">
+                      Nama Pengirim
+                      <div className="relative">
+                        <User className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400" />
+                        <input
+                          value={authorName}
+                          onChange={(e) => setAuthorName(e.target.value)}
+                          placeholder="Nama Lengkap"
+                          className="min-h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-xs text-slate-900 outline-none focus:border-[#0133C6] focus:ring-2 focus:ring-[#0133C6]/10"
+                        />
+                      </div>
+                    </label>
+
+                    <label className="flex flex-col gap-1 text-xs font-normal text-slate-700">
+                      Program Studi / Fakultas
+                      <div className="relative">
+                        <GraduationCap className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400" />
+                        <input
+                          value={faculty}
+                          onChange={(e) => setFaculty(e.target.value)}
+                          placeholder="Fakultas / Prodi"
+                          className="min-h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-xs text-slate-900 outline-none focus:border-[#0133C6] focus:ring-2 focus:ring-[#0133C6]/10"
+                        />
+                      </div>
+                    </label>
                   </div>
                 )}
               </div>
 
               {/* Submit Buttons */}
-              <div className="mt-6 flex items-center justify-end gap-3 pt-2">
+              <div className="mt-2 flex items-center justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="min-h-11 rounded-xl px-4 text-xs font-bold text-slate-600 hover:bg-slate-100"
+                  className="min-h-12 rounded-xl px-5 text-sm font-semibold text-slate-600 hover:bg-slate-100 transition"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#0133C6] px-6 text-xs font-bold text-white shadow-md shadow-[#0133C6]/20 transition hover:bg-[#0952B6]"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#0133C6] px-6 text-sm font-semibold text-white shadow-lg shadow-[#0133C6]/25 transition hover:bg-[#0952B6]"
                 >
-                  <Send className="size-3.5" />
-                  Kirimkan Aspirasi
+                  <Send className="size-4" />
+                  <span>Kirimkan Aspirasi</span>
                 </button>
               </div>
             </form>
@@ -411,3 +537,4 @@ export function AspirasiBoard() {
     </div>
   )
 }
+

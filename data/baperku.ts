@@ -156,7 +156,7 @@ export const modules: Module[] = [
   {
     slug: 'dikmenkop-shu',
     title: 'DIKMENKOP: Sisa Hasil Usaha (SHU)',
-    description: 'Memahami SHU, jasa transaksi, dan reward point PSDA.',
+    description: 'Memahami SHU, jasa transaksi, dan reward point keaktifan anggota.',
     readTime: 6,
     intro: 'SHU adalah pendapatan koperasi dalam satu tahun buku setelah dikurangi biaya, penyusutan, dan kewajiban lainnya.',
     sections: [
@@ -165,10 +165,10 @@ export const modules: Module[] = [
         paragraphs: [
           'Pembagian SHU memperhatikan jasa transaksi dan jasa simpanan anggota sesuai keputusan Rapat Anggota.',
         ],
-        bullets: ['Jasa transaksi', 'Jasa simpanan', 'Reward point PSDA dari kegiatan anggota'],
+        bullets: ['Jasa transaksi', 'Jasa simpanan', 'Reward point keaktifan anggota dari kegiatan KOPMA'],
       },
       {
-        heading: 'Reward point PSDA',
+        heading: 'Reward point keaktifan anggota',
         paragraphs: [
           'Poin kegiatan menjadi bentuk apresiasi partisipasi anggota: rapat kepanitiaan bernilai 1 poin, panitia bernilai 2 poin, dan peserta bernilai 1 poin.',
         ],

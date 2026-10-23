@@ -3,23 +3,21 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Portal Anggota KOPMA UNSIL | BAPERKU Digital',
-  description: 'Portal digital BAPERKU dan ruang interaksi anggota KOPMA UNSIL',
+  title: 'KOPMA UNSIL | BAPERKU Digital',
+  description: 'BAPERKU Digital dan ruang interaksi resmi anggota KOPMA UNSIL',
   icons: {
     icon: [
       {
         url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
+        sizes: '32x32',
+        type: 'image/png',
       },
       {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/LOGO%20KOPMA.PNG',
+        type: 'image/png',
       },
     ],
+    shortcut: '/icon-light-32x32.png',
     apple: '/apple-icon.png',
   },
 }

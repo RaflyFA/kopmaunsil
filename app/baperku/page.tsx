@@ -8,6 +8,8 @@ import { PageHeader, PortalShell } from '@/components/portal-shell'
 import { LearningProgressCard } from '@/components/progress-tracker'
 import { getStoredData, STORAGE_KEYS } from '@/lib/storage'
 
+import { getMemberBaperkuProgress } from '@/lib/baperku/actions'
+
 export default function BaperkuPage() {
   const [query, setQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'uncompleted'>('all')
@@ -15,14 +17,31 @@ export default function BaperkuPage() {
   const [quizScores, setQuizScores] = useState<Record<string, { score: number; maxScore: number }>>({})
 
   useEffect(() => {
-    const syncStatus = () => {
-      setCompletedList(getStoredData<string[]>(STORAGE_KEYS.COMPLETED_MODULES, []))
-      setQuizScores(getStoredData<Record<string, { score: number; maxScore: number }>>(STORAGE_KEYS.QUIZ_RESULTS, {}))
-    }
-    syncStatus()
+    let isMounted = true
 
-    window.addEventListener('kopma-storage-updated', syncStatus)
-    return () => window.removeEventListener('kopma-storage-updated', syncStatus)
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('kopma_completed_modules')
+    }
+
+    async function syncProgress() {
+      try {
+        const data = await getMemberBaperkuProgress()
+        if (isMounted) {
+          setCompletedList(data.completedModules)
+          setQuizScores(data.quizScores)
+        }
+      } catch (err) {
+        console.error('Failed to sync baperku progress:', err)
+      }
+    }
+    syncProgress()
+
+    const onProgressUpdated = () => syncProgress()
+    window.addEventListener('kopma-baperku-updated', onProgressUpdated)
+    return () => {
+      isMounted = false
+      window.removeEventListener('kopma-baperku-updated', onProgressUpdated)
+    }
   }, [])
 
   const filtered = useMemo(() => {
@@ -45,7 +64,7 @@ export default function BaperkuPage() {
       <PageHeader
         eyebrow="Silabus Pendidikan Anggota"
         title="BAPERKU (Modul Edukasi)"
-        description="Buku Alur Petunjuk Edukasi dan Rapor KOPMA UNSIL. Pelajari materi dasar hingga menengah, uji pemahamanmu dengan kuis interaktif, dan kumpulkan poin keaktifan belajarmu."
+        description="Buku Alur Petunjuk Edukasi dan Rapor KOPMA UNSIL. Pelajari materi dasar hingga menengah, uji pemahamanmu dengan kuis interaktif"
       />
 
       {/* Learning Progress Card Widget */}
@@ -170,7 +189,7 @@ export default function BaperkuPage() {
                     </span>
                   ) : (
                     <span className="font-semibold text-[#0133C6] group-hover:underline">
-                      Mulai Belajar →
+                     
                     </span>
                   )}
                 </div>

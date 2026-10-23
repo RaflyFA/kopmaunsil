@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   BookOpen,
@@ -14,7 +15,8 @@ import {
   UserRound,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { CommandSearch } from '@/components/command-search'
+import { UserDropdown } from '@/components/user-dropdown'
+import type { CurrentMember } from '@/lib/auth/types'
 
 const navItems = [
   { href: '/', label: 'Beranda', icon: Home },
@@ -26,20 +28,27 @@ const navItems = [
 export function LogoMark({ compact = false }: { compact?: boolean }) {
   return (
     <Link href="/" className="flex items-center gap-3 transition hover:opacity-90">
-      <div className="flex size-10 items-center justify-center rounded-xl bg-[#0133C6] text-lg font-black text-white shadow-md shadow-[#0133C6]/20">
-        K
+      <div className="relative size-10 flex items-center justify-center">
+        <Image
+          src="/LOGO KOPMA.PNG"
+          alt="Logo KOPMA UNSIL"
+          width={40}
+          height={40}
+          className="object-contain"
+          priority
+        />
       </div>
       {!compact && (
         <div>
           <p className="text-sm font-bold leading-none text-slate-900">KOPMA UNSIL</p>
-          <p className="mt-1 text-xs font-semibold text-[#0133C6]">Portal Anggota</p>
+          <p className="mt-1 text-xs font-semibold text-[#0133C6]">Universitas Siliwangi</p>
         </div>
       )}
     </Link>
   )
 }
 
-export function TopNav() {
+export function TopNav({ member }: { member?: CurrentMember | null }) {
   const pathname = usePathname()
 
   return (
@@ -47,7 +56,7 @@ export function TopNav() {
       <div className="mx-auto flex h-20 max-w-5xl items-center justify-between px-6">
         <LogoMark />
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <nav className="flex items-center gap-1">
             {navItems.map(({ href, label, icon: Icon }) => (
               <Link
@@ -66,15 +75,7 @@ export function TopNav() {
             ))}
           </nav>
 
-          <CommandSearch />
-
-          <Link
-            href="/login"
-            title="Profil Anggota"
-            className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-[#0133C6] to-[#0952B6] text-xs font-bold text-white shadow-sm ring-2 ring-blue-100 transition hover:scale-105"
-          >
-            AR
-          </Link>
+          <UserDropdown initialMember={member} />
         </div>
       </div>
     </header>
@@ -94,19 +95,19 @@ export function BottomNav() {
               key={href}
               href={href}
               className={cn(
-                'flex min-h-14 min-w-14 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-bold transition-colors',
+                'flex min-h-14 min-w-14 flex-col items-center justify-center gap-0.5 rounded-xl text-[10px] font-bold transition-colors',
                 isActive ? 'text-[#0133C6]' : 'text-slate-500 hover:text-slate-900'
               )}
             >
               <div
                 className={cn(
-                  'flex size-8 items-center justify-center rounded-lg transition-all',
+                  'flex size-9 items-center justify-center rounded-xl transition-all',
                   isActive ? 'bg-[#0133C6]/10 text-[#0133C6]' : ''
                 )}
               >
-                <Icon className="size-4" />
+                <Icon className="size-[22px] stroke-[2.2]" />
               </div>
-              <span className="leading-none">{label}</span>
+              <span className="leading-tight">{label}</span>
             </Link>
           )
         })}
@@ -115,10 +116,16 @@ export function BottomNav() {
   )
 }
 
-export function PortalShell({ children }: { children: React.ReactNode }) {
+export function PortalShell({
+  children,
+  member,
+}: {
+  children: React.ReactNode
+  member?: CurrentMember | null
+}) {
   return (
     <div className="min-h-screen bg-slate-50/40">
-      <TopNav />
+      <TopNav member={member} />
       <main className="mx-auto max-w-5xl px-4 pb-28 md:px-6 md:pb-12">{children}</main>
       <BottomNav />
     </div>
@@ -138,7 +145,7 @@ export function PageHeader({
     <div className="pt-8 md:pt-10">
       <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#0133C6]">
         <span className="h-0.5 w-6 rounded-full bg-[#0133C6]" />
-        {eyebrow || 'Portal Anggota'}
+        {eyebrow || 'KOPMA UNSIL'}
       </div>
       <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">{title}</h1>
       {description && <p className="mt-2.5 max-w-2xl text-sm leading-6 text-slate-600">{description}</p>}
