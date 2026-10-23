@@ -6,10 +6,20 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  // Tambahkan Security Headers standar
+  supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff')
+  supabaseResponse.headers.set('X-Frame-Options', 'DENY')
+  supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    return supabaseResponse
+  }
+
+  try {
+    const supabase = createServerClient(url, key, {
       cookies: {
         getAll() {
           return request.cookies.getAll()
@@ -24,16 +34,14 @@ export async function updateSession(request: NextRequest) {
           )
         },
       },
-    }
-  )
+    })
 
-  // Refresh auth token
-  await supabase.auth.getUser()
-
-  // Tambahkan Security Headers standar
-  supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff')
-  supabaseResponse.headers.set('X-Frame-Options', 'DENY')
-  supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+    // Refresh auth token
+    await supabase.auth.getUser()
+  } catch (err) {
+    console.error('Middleware updateSession error:', err)
+  }
 
   return supabaseResponse
 }
+
