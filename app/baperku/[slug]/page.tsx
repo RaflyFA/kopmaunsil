@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,13 +14,28 @@ import { PortalShell } from '@/components/portal-shell'
 import { BaperkuQuiz } from '@/components/baperku-quiz'
 import { ModuleCompletionToggle, ReadingProgressBar } from '@/components/progress-tracker'
 
+const legacySlugAliases: Record<string, string> = {
+  'profil-kopma-unsil': 'mengenal-kopma-unsil',
+  'sejarah-kopma-unsil': 'mengenal-kopma-unsil',
+  'visi-misi-2026': 'mengenal-kopma-unsil',
+  'hak-dan-kewajiban': 'keanggotaan-dan-simpanan',
+  'simpanan-anggota': 'keanggotaan-dan-simpanan',
+  'dikmenkop-manajemen-koperasi': 'dikmenkop',
+  'dikmenkop-keorganisasian': 'dikmenkop',
+  'dikmenkop-shu': 'dikmenkop',
+}
+
 export function generateStaticParams() {
-  return modules.map((m) => ({ slug: m.slug }))
+  return [
+    ...modules.map((m) => ({ slug: m.slug })),
+    ...Object.keys(legacySlugAliases).map((slug) => ({ slug })),
+  ]
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const module = getModule(slug)
+  const targetSlug = legacySlugAliases[slug] || slug
+  const module = getModule(targetSlug)
   if (!module) return { title: 'Materi Tidak Ditemukan' }
   return {
     title: `${module.title} | BAPERKU KOPMA UNSIL`,
@@ -30,6 +45,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ModuleDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  if (legacySlugAliases[slug]) {
+    redirect(`/baperku/${legacySlugAliases[slug]}`)
+  }
+
   const module = getModule(slug)
   if (!module) notFound()
 

@@ -46,9 +46,12 @@ export default function BaperkuPage() {
 
   const filtered = useMemo(() => {
     return modules.filter((m) => {
+      const q = query.toLowerCase()
       const matchQuery =
-        m.title.toLowerCase().includes(query.toLowerCase()) ||
-        m.description.toLowerCase().includes(query.toLowerCase())
+        m.title.toLowerCase().includes(q) ||
+        m.description.toLowerCase().includes(q) ||
+        m.intro.toLowerCase().includes(q) ||
+        m.sections.some((s) => s.heading.toLowerCase().includes(q))
 
       const isCompleted = completedList.includes(m.slug)
       let matchStatus = true

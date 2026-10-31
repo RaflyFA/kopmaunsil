@@ -18,15 +18,153 @@ export type EventDoc = {
 
 export const documentationEvents: EventDoc[] = [
   {
+    id: 'doc-dikmenkop-2026',
+    title: 'DIKMENKOP (Pendidikan Menengah Koperasi) 2026',
+    category: 'Pendidikan',
+    date: '24 Oktober 2026',
+    location: 'Ruang Rapat Rektorat Kampus 2 Universitas Siliwangi',
+    summary:
+      'Pendidikan Menengah Koperasi (DIKMENKOP) 2026 sebagai jenjang kaderisasi lanjutan bagi anggota baru KOPMA UNSIL pasca DIKSARKOP, menghadirkan seminar kewirausahaan, talkshow penguatan ekosistem bisnis koperasi, serta grand final pemilihan Duta KOPMA UNSIL 2026.',
+    description:
+      'Pendidikan Menengah Koperasi (DIKMENKOP) 2026 merupakan program kaderisasi tingkat lanjutan yang strategis bagi anggota baru KOPMA UNSIL setelah menuntaskan tahapan Pendidikan Dasar Koperasi (DIKSARKOP). Mengusung tema "Kolaborasi, Keuangan, dan Kepemimpinan: Membangun Ekosistem Bisnis Koperasi yang Tangguh Lewat Semangat Kekeluargaan", kegiatan ini dirancang untuk mempertajam kapasitas intelektual, literasi manajerial, dan kapabilitas kepemimpinan anggota muda. Rangkaian agenda dibuka secara resmi dengan seremoni pemukulan angklung, dilanjutkan seminar tata kelola finansial koperasi, talkshow interaktif ekosistem bisnis bersama para praktisi dan demisioner, serta ditutup dengan penganugerahan dan Grand Final Pemilihan Duta KOPMA UNSIL 2026 sebagai representasi ikonik kader yang berkarakter, berprestasi, dan inspiratif.',
+    highlights: [
+      'Kaderisasi Jenjang Lanjutan Pasca DIKSARKOP Angkatan 2026',
+      'Seminar & Talkshow',
+      'Grand Final & Penganugerahan Duta KOPMA UNSIL 2026',
+      
+    ],
+    photosCount: 29,
+    coverImage: '/DIKMENKOP/IMG_0049.webp',
+    likes: 136,
+    gallery: [
+      {
+        url: '/DIKMENKOP/IMG_1194.webp',
+        caption: 'Foto bersama akbar seluruh peserta, panitia pelaksana, pemateri, dan Duta KOPMA UNSIL terpilih.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_0049.webp',
+        caption: 'Jajaran panitia dan pengurus KOPMA UNSIL berfoto bersama di panggung utama DIKMENKOP 2026.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9623.webp',
+        caption: 'Pembukaan khidmat dengan menyanyikan lagu kebangsaan Indonesia Raya dan Mars Koperasi.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9993.webp',
+        caption: 'Laporan dan sambutan hangat ketua pelaksana membuka rangkaian kegiatan DIKMENKOP 2026.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9650.webp',
+        caption: 'Peresmian pembukaan DIKMENKOP 2026 secara simbolis melalui pemukulan alat musik angklung.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9655.webp',
+        caption: 'Master of Ceremony (MC) memandu alur kegiatan dengan penuh semangat dan antusias.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9654.webp',
+        caption: 'Para peserta kader baru KOPMA UNSIL menyimak pembekalan materi dengan fokus dan antusiasme tinggi.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9682.webp',
+        caption: 'Sesi talkshow dan seminar inspiratif bertajuk penguatan kolaborasi serta ekosistem bisnis koperasi.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9789.webp',
+        caption: 'Pemaparan komprehensif mengenai tata kelola keuangan, inovasi unit usaha, dan kepemimpinan koperasi.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9702.webp',
+        caption: 'Sesi interaktif tanya jawab antara peserta kader baru dengan narasumber seminar.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9705.webp',
+        caption: 'Peserta menyampaikan pandangan dan tanggapan kritis dalam diskusi pembedahan studi kasus bisnis.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9774.webp',
+        caption: 'Penyerahan cinderamata dan sertifikat penghargaan kepada moderator seminar DIKMENKOP 2026.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9771.webp',
+        caption: 'Foto bersama narasumber seminar, moderator, dan seluruh kader di tengah sesi pelatihan.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9875.webp',
+        caption: 'Para finalis Duta KOPMA UNSIL 2026 duduk di panggung utama bersiap menghadapi sesi uji kompetensi.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_0009.webp',
+        caption: 'Penyerahan sertifikat penghargaan kepada dewan juri seleksi Duta KOPMA UNSIL 2026.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_0012.webp',
+        caption: 'Apresiasi dari jajaran pengurus kepada dewan juri atas bimbingan dan penilaian objektif.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9946.webp',
+        caption: 'Momen bersejarah penganugerahan dan penyematan selempang kehormatan Duta KOPMA UNSIL 2026.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_0056.webp',
+        caption: 'Potret kebersamaan Duta KOPMA UNSIL 2025 bersama Duta KOPMA UNSIL 2026 terpilih.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_0018.webp',
+        caption: 'Pengukuhan Ketua Angkatan KOPMA UNSIL dan Duta KOPMA dalam seremoni puncak acara.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_0074.webp',
+        caption: 'Keluarga besar peserta DIKMENKOP 2026 dan finalis duta berfoto bersama di atas panggung.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9753.webp',
+        caption: 'Keceriaan panitia pelaksana dari pengurus KOPMA UNSIL mengawal kelancaran seluruh rangkaian acara.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9826.webp',
+        caption: 'Suasana hangat dan keakraban para panitia dan peserta di sela rehat sesi pelatihan.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9827.webp',
+        caption: 'Momen canda tawa dan kebersamaan yang mempererat ikatan kekeluargaan antar anggota.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_9842.webp',
+        caption: 'Pose ceria narasumber, juri, dan panitia pelaksana di depan latar panggung digital.',
+      },
+      {
+        url: '/DIKMENKOP/IMG_2277.webp',
+        caption: 'Kekompakan panitia pelaksana KOPMA UNSIL mengenakan seragam biru kebanggaan Kabinet Arunika.',
+      },
+      {
+        url: '/DIKMENKOP/WhatsApp%20Image%202026-10-24%20at%2015.43.34.webp',
+        caption: 'Potret jajaran Badan Pengurus Harian KOPMA UNSIL di lobi Ruang Rapat Rektorat Kampus 2.',
+      },
+      {
+        url: '/DIKMENKOP/WhatsApp%20Image%202026-10-24%20at%2016.00.42.webp',
+        caption: 'Pose salam komando seluruh panitia menunjukkan komitmen tinggi memajukan perkoperasian kampus.',
+      },
+      {
+        url: '/DIKMENKOP/WhatsApp%20Image%202026-10-24%20at%2016.00.45.webp',
+        caption: 'Formasi lengkap seluruh panitia pelaksana DIKMENKOP 2026 di panggung aula rektorat.',
+      },
+      {
+        url: '/DIKMENKOP/WhatsApp%20Image%202026-10-24%20at%2016.52.35%20(1).webp',
+        caption: 'Solidaritas dan dedikasi pengurus KOPMA UNSIL menyukseskan agenda kaderisasi menengah.',
+      },
+    ],
+  },
+  {
     id: 'doc-diksarkop-1',
-    title: 'DIKSARKOP I (Pendidikan Dasar Koperasi)',
+    title: 'DIKSARKOP II (Pendidikan Dasar Koperasi)',
     category: 'Pendidikan',
     date: '15 Februari 2026',
     location: 'Gedung Rektorat Lt. 2 Universitas Siliwangi',
     summary:
-      'Pendidikan Dasar Koperasi (DIKSARKOP) I untuk menyambut dan membina kader baru KOPMA UNSIL dengan pengenalan jati diri, nilai-nilai perkoperasian, dan simulasi kepengurusan.',
+      'Pendidikan Dasar Koperasi (DIKSARKOP) II untuk menyambut dan membina kader baru KOPMA UNSIL dengan pengenalan jati diri, nilai-nilai perkoperasian, dan simulasi kepengurusan.',
     description:
-      'Pendidikan Dasar Koperasi (DIKSARKOP) I merupakan tahapan kaderisasi awal yang wajib diikuti oleh seluruh calon anggota baru Koperasi Mahasiswa Universitas Siliwangi. Melalui kegiatan ini, peserta diberikan pembekalan intensif seputar sejarah gerakan koperasi, prinsip-prinsip dasar koperasi, struktur kelembagaan, hak dan kewajiban anggota, hingga etika berorganisasi. Kegiatan ini juga terdapat sesi interaktif bersama pemateri berpengalaman guna menumbuhkan jiwa wirausaha kolektif dan loyalitas sejak dini.',
+      'Pendidikan Dasar Koperasi (DIKSARKOP) II merupakan tahapan kaderisasi awal yang wajib diikuti oleh seluruh calon anggota baru Koperasi Mahasiswa Universitas Siliwangi. Melalui kegiatan ini, peserta diberikan pembekalan intensif seputar sejarah gerakan koperasi, prinsip-prinsip dasar koperasi, struktur kelembagaan, hak dan kewajiban anggota, hingga etika berorganisasi. Kegiatan ini juga terdapat sesi interaktif bersama pemateri berpengalaman guna menumbuhkan jiwa wirausaha kolektif dan loyalitas sejak dini.',
     highlights: [
       'Pengenalan Jati Diri & 7 Prinsip Koperasi Mahasiswa',
       'Sesi Pembinaan Karakter & Keakraban Kader Angkatan 2026',
@@ -41,7 +179,7 @@ export const documentationEvents: EventDoc[] = [
       },
       {
         url: '/DIKSARKOP%201/IMG_0459.webp',
-        caption: 'Suasana pembukaan DIKSARKOP I bersama jajaran pengurus KOPMA UNSIL.',
+        caption: 'Suasana pembukaan DIKSARKOP II bersama jajaran pengurus KOPMA UNSIL.',
       },
       {
         url: '/DIKSARKOP%201/IMG_4750.webp',
@@ -228,7 +366,7 @@ export const documentationEvents: EventDoc[] = [
   },
   {
     id: 'doc-temu-anggota-2',
-    title: 'Temu Anggota II: Evaluasi & Kebersamaan',
+    title: 'Temu Anggota II: Kebersamaan',
     category: 'Temu Anggota',
     date: '10 Oktober 2026',
     location: 'Gedung FKIP',

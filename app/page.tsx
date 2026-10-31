@@ -133,7 +133,7 @@ export default async function HomePage() {
             <div className="mt-4 flex items-center justify-between border-t border-slate-200/60 pt-3 text-xs">
               <span className="text-slate-500">Dapatkan +2 Poin Keaktifan</span>
               <Link
-                href="/baperku/dikmenkop-manajemen-koperasi"
+                href="/baperku/dikmenkop"
                 className="font-bold text-[#0133C6] hover:underline flex items-center gap-1"
               >
                 Pelajari Silabus <ArrowUpRight className="size-3.5" />
@@ -236,7 +236,7 @@ export default async function HomePage() {
             href="/baperku"
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0133C6] py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#0952B6]"
           >
-            Lihat Semua 9 Modul BAPERKU <ArrowRight className="size-3.5" />
+            Lihat Semua 4 Modul BAPERKU <ArrowRight className="size-3.5" />
           </Link>
         </div>
       </section>

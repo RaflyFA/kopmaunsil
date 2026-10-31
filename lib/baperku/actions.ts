@@ -10,6 +10,17 @@ export interface BaperkuProgressData {
   userId: string | null
 }
 
+const legacySlugAliases: Record<string, string> = {
+  'profil-kopma-unsil': 'mengenal-kopma-unsil',
+  'sejarah-kopma-unsil': 'mengenal-kopma-unsil',
+  'visi-misi-2026': 'mengenal-kopma-unsil',
+  'hak-dan-kewajiban': 'keanggotaan-dan-simpanan',
+  'simpanan-anggota': 'keanggotaan-dan-simpanan',
+  'dikmenkop-manajemen-koperasi': 'dikmenkop',
+  'dikmenkop-keorganisasian': 'dikmenkop',
+  'dikmenkop-shu': 'dikmenkop',
+}
+
 /**
  * Mengambil progres membaca dan hasil kuis anggota yang sedang login dari Supabase.
  */
@@ -40,7 +51,9 @@ export async function getMemberBaperkuProgress(): Promise<BaperkuProgressData> {
       console.error('Error fetching member_progress:', progErr)
     }
 
-    const completedModules = progressRows ? progressRows.map((r) => r.module_slug) : []
+    const completedModules = progressRows
+      ? Array.from(new Set(progressRows.map((r) => legacySlugAliases[r.module_slug] || r.module_slug)))
+      : []
 
     // 2. Ambil nilai kuis yang telah dikerjakan
     const { data: quizRows, error: quizErr } = await admin
@@ -55,9 +68,16 @@ export async function getMemberBaperkuProgress(): Promise<BaperkuProgressData> {
     const quizScores: Record<string, { score: number; maxScore: number }> = {}
     if (quizRows) {
       for (const row of quizRows) {
+        const canonical = legacySlugAliases[row.module_slug] || row.module_slug
         quizScores[row.module_slug] = {
           score: row.score,
           maxScore: row.max_score,
+        }
+        if (!quizScores[canonical]) {
+          quizScores[canonical] = {
+            score: row.score,
+            maxScore: row.max_score,
+          }
         }
       }
     }

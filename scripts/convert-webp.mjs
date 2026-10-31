@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import sharp from 'sharp'
 
-const folders = ['DIKSARKOP 1', 'LPJS 2026', 'Temu Anggota 1', 'Temu Anggota 2']
+const folders = ['DIKSARKOP 2', 'LPJS 2026', 'Temu Anggota 1', 'Temu Anggota 2', 'DIKMENKOP']
 const publicDir = path.resolve('public')
 
 async function convertAll() {
@@ -25,9 +25,13 @@ async function convertAll() {
         continue
       }
 
-      const baseName = path.basename(file, path.extname(file))
+      const baseName = file.replace(/(\.jpe?g|\.heic)+$/gi, '')
       const inputPath = path.join(folderPath, file)
       const outputPath = path.join(folderPath, `${baseName}.webp`)
+
+      if (fs.existsSync(outputPath)) {
+        continue
+      }
 
       try {
         const statsBefore = fs.statSync(inputPath)

@@ -4,7 +4,7 @@ import pillow_heif
 
 pillow_heif.register_heif_opener()
 
-folders = ['DIKSARKOP 1', 'LPJS 2026', 'Temu Anggota 1', 'Temu Anggota 2']
+folders = ['DIKSARKOP 2', 'LPJS 2026', 'Temu Anggota 1', 'Temu Anggota 2']
 public_dir = os.path.abspath('public')
 
 print("=== MEMULAI KONVERSI SELURUH FOTO KE WEBP ===")
